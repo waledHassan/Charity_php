@@ -1,0 +1,397 @@
+<?php
+ob_start();
+session_start();
+ if(isset($_SESSION['admin'])){
+     include("connect.php");
+     include("functions/function.php");
+     $action = isset($_GET['action']) ? $_GET['action'] : 'manage';
+     @$Govid = $_GET['Govid']
+      ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="assets/images/favicon.svg"
+      type="image/x-icon"
+    />
+    <title>الأقسام</title>
+
+    <!-- ========== All CSS files linkup ========= -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/lineicons.css" />
+    <link rel="stylesheet" href="assets/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="assets/css/fullcalendar.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+  <?php
+    include("template/sidebar_index1.php");
+    ?>
+    <div class="overlay"></div>
+
+    <main class="main-wrapper">
+     <?php
+     include('template/header_index1.php');
+     ?>
+
+      <section class="card-components">
+        <div class="container-fluid">
+          <!-- ========== title-wrapper start ========== -->
+          <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <div class="title mb-30">
+                  <h2>Governate Page</h2>
+                  <a href="?action=add&Govid=<?= @$_GET['Govid']?>" class='btn btn-outline-primary btn-xsm'  style='margin: 20px;font-size: 20px;'>اضافة </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cards-styles">
+            <div class="row">
+          <?php
+if($action == 'manage'){
+    $cats = $conn -> prepare("SELECT * FROM governate_content WHERE governate_id  = ?");
+    $cats -> execute(array($Govid));
+    $rows= $cats -> fetchAll();
+
+    $count = $cats -> rowCount();
+    if($count > 0){
+    foreach($rows as $row){
+?>
+         
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                <div class="card-style-1 mb-30">
+                  <div class="card-image">
+                     <?php if($row['image'] != '' ){?>
+                        <img src="../img/<?= $row['image'] ?>" style="height:220px;">
+                      <?php }
+                        ?>
+                  </div>
+                  <div class="card-content text-center">
+                    <h4><a href="#0"> <?php echo $row['name'] ?> </a></h4>
+                  </div>
+                  <a href="?action=edit&id=<?php echo $row['id'] ?>&Govid=<?= $_GET['Govid']?>" class='btn btn-outline-primary btn-xsm' style='margin: 20px;'>Change</a>
+                  <a href="?action=delete&id=<?php echo $row['id'] ?>&Govid=<?= $_GET['Govid']?>" class='btn btn-outline-danger btn-xsm' style='margin: 20px;'>Delete</a>
+                </div>
+              </div>
+        
+
+     <?php
+    }
+}else{
+    echo "<div class='alert alert-primary text-center container'>لا يوجد عناصر</div>";
+    echo "<a href='?action=add&Govid=".$_GET['Govid']."' class='btn btn-outline-primary btn-xsm' style='font-size:20px;'>اضافة</a>";
+}
+  }elseif($action == 'add'){
+    ?>
+ <form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF']?>?action=insert&Govid=<?= @$_GET['Govid']?>" method='POST'>
+
+
+ <div class="col-lg-10" style='margin: 50px ;'>
+            <div class="card-style settings-card-2 mb-30">
+              <div class="title mb-30">
+                <h6>New Category</h6>
+              </div>
+                <div class="row">
+                  </div>
+                  <div class="col-12">
+                    <div class="input-style-1">
+                      <label> name</label>
+                      <input type="text" placeholder="name" name='name'/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="input-style-1">
+                      <label> File</label>
+                      <input type="file" placeholder="file" name='file' required="require"/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="input-style-1">
+                      <label> Jop</label>
+                      <input type="text" placeholder="video" name='jop'/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                       <div class="input-style-1">
+                         <label>image</label>
+                           <input name="avatar" type="file" required="require">
+                       </div>
+                     </div>
+                  <div class="col-12">
+                    <button class="main-btn primary-btn btn-hover col-12"  style='font-size: 20px;'>
+                      اضافة
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+</form>
+
+<?php
+// #############################################################################
+  }elseif($action == 'insert'){
+
+              if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+                $Govid = $_GET['Govid'];
+                      $name      = $_POST['name'];
+                      // $file      = $_POST['file'];
+                      $jop      = $_POST['jop'];
+
+                      $avatarname = $_FILES['avatar']['name'];
+                      $avatarsize = $_FILES['avatar']['size'];
+                      $avatartmp = $_FILES['avatar']['tmp_name'];
+                      $avatartype = $_FILES['avatar']['type'];
+    
+                      $avatarAllowedExtensions = array("jpg" , "jpeg" , "png" , "gif");  // allowed files
+    
+                      @$avatarExtention = strtolower( end ( explode ('.' , $avatarname) ) );
+
+                      
+                      $filename = $_FILES['file']['name'];
+                      $filesize = $_FILES['file']['size'];
+                      $filetmp = $_FILES['file']['tmp_name'];
+                      $filetype = $_FILES['file']['type'];
+    
+                      $fileAllowedExtensions = array("pdf");  // allowed files
+    
+                      @$fileExtention = strtolower( end ( explode ('.' , $filename) ) );
+
+                    $formErrors = [];
+                    if(empty($name)){
+                      $formErrors[] = "الرجاء اضافة الاسم ";
+                    }
+                    if(empty($file) && empty($jop) && empty($filename)){
+                         $formErrors[] = 'الرجاء اضافة صورة أو نص أو فيديو';
+                    }
+
+
+                  foreach($formErrors as $error){
+                        echo "<div class='alert alert-danger container text-center'>" .$error. "</div>";
+                        header("refresh:2;url=".$_SERVER['HTTP_REFERER']."");
+
+                  }
+
+          if(empty($formErrors)){
+
+            $avatar = rand(0 , 100000000) . '_' . $avatarname;
+            move_uploaded_file($avatartmp , "../img/" . $avatar);
+
+            $file = rand(0 , 100000000) . '_' . $filename;
+            move_uploaded_file($filetmp , "../img/" . $file);
+
+                       $stmt = $conn -> prepare("INSERT INTO governate_content
+                                                            (name , file , jop , image , governate_id)
+                                                    VALUES
+                                                            (:name , :file , :jop ,:image ,:Govid)");
+
+                        $stmt -> execute(array(
+                                        'name'       => $name,
+                                        'file'       => $file,
+                                        'jop'       => $jop,
+                                        'image'       => $avatar,
+                                        'Govid' => $Govid
+                                         ));
+        echo "<div class='alert alert-success text-center container'>" . $stmt->rowCount() . " Recored Done</din>";
+        header("refresh:2;url=".$_SERVER['HTTP_REFERER']."");
+          }
+
+          }else{
+          echo "<div class='alert alert-danger text-center container'>Acess Denied</div>";
+          header("refresh:2;url=index.php");
+          }
+
+
+    // ########################################################################     
+    
+    
+  }elseif($action == 'edit'){
+
+    
+    @$id = $_GET['id'];
+    @$Govid = $_GET['Govid'];
+
+    $stmt = $conn -> prepare("SELECT * FROM governate_content WHERE id =? AND governate_id  =? ");
+            $stmt -> execute(array($id , $Govid));
+            $row = $stmt -> fetch();
+    
+    ?>
+    <form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF']?>?action=update&Govid=<?= $_GET['Govid'] ?>&id=<?php echo $row['id'] ?>" method='POST'>
+
+
+    <div class="col-lg-10" style='margin: 50px ;'>
+               <div class="card-style settings-card-2 mb-30">
+                 <div class="title mb-30">
+                   <h6>تعديل  </h6>
+                 </div>
+                   <div class="row">
+                   <div class="col-12">
+                    <div class="input-style-1">
+                      <label> name</label>
+                      <input type="text" placeholder="name" name='name' value='<?= $row['name'] ?>'/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="input-style-1">
+                      <label> File</label>
+                      <input type="file" placeholder="file" name='file'/>
+                      <a href="../img/<?= $row['file'] ?>"> <div class='btn btn-primary' style='color:#fff;font-size:19px;'>عرض</div> </a>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="input-style-1">
+                      <label> Jop</label>
+                      <input type="text" placeholder="video" name='jop' value='<?= $row['jop'] ?>'/>
+                    </div>
+                  </div>
+ 
+                  <div class="col-12">
+                       <div class="input-style-1">
+                         <label>image</label>
+                           <input required="require" name="avatar" type="file">
+                           <?php if($row['image'] != '' ){ ?>
+                         <img src="../img/<?php echo $row['image'] ?>" style='width:100px;height: 100px;margin: 10px 0 10px 200px;'/>
+                      <?php }
+                      ?>
+                        </div>
+                     </div>
+                     <div class="col-12">
+                       <button class="main-btn primary-btn btn-hover col-12" style='font-size: 20px;'>
+                         تعديل 
+                       </button>
+                     </div>
+                   </div>
+                 </form>
+               </div>
+             </div>
+   </form>
+
+  <?php 
+// #########################################################################################  
+}elseif($action== 'update'){
+
+              if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+                $id = $_GET['id'];
+                     $Govid = $_GET['Govid'];
+                      $name      = $_POST['name'];
+                      $jop      = $_POST['jop'];
+
+                      $avatarname = $_FILES['avatar']['name'];
+                      $avatarsize = $_FILES['avatar']['size'];
+                      $avatartmp = $_FILES['avatar']['tmp_name'];
+                      $avatartype = $_FILES['avatar']['type'];
+
+                      $avatarAllowedExtensions = array("jpg" , "jpeg" , "png" , "gif");  // allowed files
+
+                      @$avatarExtention = strtolower( end ( explode ('.' , $avatarname) ) );
+
+
+                      
+                      $filename = $_FILES['file']['name'];
+                      $filesize = $_FILES['file']['size'];
+                      $filetmp = $_FILES['file']['tmp_name'];
+                      $filetype = $_FILES['file']['type'];
+
+                      $fileAllowedExtensions = array("pdf");  // allowed files
+
+                      @$fileExtention = strtolower( end ( explode ('.' , $filename) ) );
+
+                    $formErrors = [];
+                    if(empty($name)){
+                      $formErrors[] = "الرجاء اضافة الاسم ";
+                    }
+                    if(empty($file) && empty($jop) && empty($filename)){
+                        $formErrors[] = 'الرجاء اضافة صورة أو نص أو فيديو';
+                    }
+
+
+                  foreach($formErrors as $error){
+                        echo "<div class='alert alert-danger container text-center'>" .$error. "</div>";
+                        header("refresh:2;url=".$_SERVER['HTTP_REFERER']."");
+
+                  }
+
+            if(empty($formErrors)){
+
+            $avatar = rand(0 , 100000000) . '_' . $avatarname;
+            move_uploaded_file($avatartmp , "../img/" . $avatar);
+
+            $file = rand(0 , 100000000) . '_' . $filename;
+            move_uploaded_file($filetmp , "../img/" . $file);
+
+                      $stmt = $conn -> prepare("UPDATE governate_content SET name = ? , file = ? , jop = ? , image = ? , governate_id = ? WHERE id = ?");
+                      $stmt -> execute(array( $name , $file , $jop , $avatar , $Govid , $id ));
+
+            echo "<div class='alert alert-success text-center container'>" . $stmt->rowCount() . " Recored Done</din>";
+            header("refresh:2;url=".$_SERVER['HTTP_REFERER']."");
+            }
+
+            }else{
+            echo "<div class='alert alert-danger text-center container'>Acess Denied</div>";
+            header("refresh:2;url=index.php");
+            }
+
+   // #####################################################################################   
+  }elseif($action == 'delete'){
+
+    $id    = $_GET['id'];
+    $Govid = $_GET['Govid'];
+  
+    $stmt_delete = $conn -> prepare("SELECT * FROM governate_content WHERE id = ? AND governate_id  = ?");
+    $stmt_delete -> execute(array($id , $Govid));
+    $count_delete = $stmt_delete -> rowCount();
+  
+  if($count_delete > 0){
+  
+      $stmt = $conn -> prepare("DELETE FROM governate_content WHERE id = ? AND governate_id  = ?");
+      $stmt -> execute(array($id , $Govid));
+  
+      echo "<div class='alert alert-success text-center container'>" .  $stmt -> rowCount() . 'Record Deleted </div>';
+      header("refresh:2;url=".$_SERVER['HTTP_REFERER']."");
+  
+  }else{
+  
+      echo "<div class='alert alert-danger text-center container'>This Id Doesn’t Exist</div>";
+      header("refresh:2;url=index.php");
+  }
+  }
+  
+     ?>     
+         </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    <!-- ======== main-wrapper end =========== -->
+
+    <!-- ========= All Javascript files linkup ======== -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/Chart.min.js"></script>
+    <script src="assets/js/dynamic-pie-chart.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/fullcalendar.js"></script>
+    <script src="assets/js/jvectormap.min.js"></script>
+    <script src="assets/js/world-merc.js"></script>
+    <script src="assets/js/polyfill.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
+<?php
+}else{
+  header("location:index1.php");
+  exit();
+}
+
+ob_end_flush();
+?>

@@ -1,0 +1,143 @@
+ /* start admin */
+.form_admin .first_div{
+ border-radius: 20px;;
+  box-shadow: 0px 0px 3px 0px #00000047;
+   margin: 100px auto;
+}
+.form_admin .btn{
+    margin-bottom: 20px;
+}
+a{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: none;
+
+}
+
+.form_admin h1{
+    color: #007bff;
+}
+.admin_information{
+     margin: 100px auto;
+}
+.admin_information h1{
+    color: aliceblue;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0;
+}
+.admin_information .list{
+    border-radius: 0 0 8px 8px;
+
+}
+.admin_information .list ul{
+    padding: 5px 20px;
+}
+.admin_information a{
+    width: 98%;
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 5px 20px;
+    font-size: 25px;
+    border-radius: 0 0 8px 8px;
+}
+.admin_information .form_admin_edit input{
+    width: 98%;
+    margin: 30px 0px 30px 10px;
+    padding: 5px 20px;
+    border: none;
+    outline: none;
+}
+.admin_information .form_admin_edit span{
+     margin-top: 60px;
+}
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 500;
+}
+td{
+   text-align: center;
+   font-size: 18px;
+  font-weight: 500;
+}
+ /* end  admin */
+ .add_cat{
+  margin-top: 100px;;
+ }
+ .add_cat h1{
+    background-color: #007bff;
+    color: #f2f2f2;
+    padding: 10px 0;
+    border-radius: 8px 8px 0 0;
+ }
+.cats_head input{
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    background-color: #eee;
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 18px;
+}
+.cats_body textarea{
+  outline: none;
+  border: none;
+  background-color: #eee;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 18px;
+}
+.cats_body input{
+  outline: none;
+  border: none;
+  background-color: #eee;
+  padding: 10px 15px;
+  font-size: 18px;
+}
+.add_cat button{
+    margin-top: 10px;
+    border-radius: 0 0 8px 8px;
+}
+.calc{
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+}
+.calc button{
+  padding: 5px;
+  margin: 5px 1px;
+  border: none;
+  font-size: 20px;
+  height: 50px;
+  background-color: cadetblue;
+}
+input{
+  grid-column: span 4;
+  border: none;
+  height: 100px;
+  text-align: end;
+  padding: 0 15px;
+  font-size: 20px;
+}
